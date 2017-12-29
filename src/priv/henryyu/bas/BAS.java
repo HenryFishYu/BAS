@@ -4,60 +4,43 @@ package priv.henryyu.bas;
  * 
  * @author HenryYu
  * @date 2017年12月27日下午2:56:42
- * @version 1.0.0
+ * @version 1.1.0
  */
 public class BAS {
-	private double eta; 			//should be larger than 0 and smaller than 1
 	private double defaultX;		//param X
 	private double x;				//result X
 	private double leftX;
 	private double rightX;
-	private double defaultStep;    //move step(Weight)
-	private double step;
 	private double y;				
 	private double accuracy;
 	private double a;
 	private double b;
 	private double c;
 	
-	public BAS(double accuracy,double defaultX,double eta,double a,double b,double c) {
-		defaultStep=1;
+	public BAS(double accuracy,double defaultX,double a,double b,double c) {
 		this.accuracy=accuracy;
 		this.defaultX=defaultX;
-		this.eta=eta;
 		this.a=a;
 		this.b=b;
 		this.c=c;
 	}
 	
-	public void setStep(double step) {
-		this.step=step;
-	}
-	
 	public double getMin(double times) {
-		step=defaultStep;
 		x=defaultX;
 		for(int i=0;i<times;i++) {
-			if(getY(x-accuracy/2)>getY(x+accuracy/2)) {
-				x+=accuracy*step;		
-			}else {
-				x-=accuracy*step;
-			}
-			step=step*eta;
+			double leftY=getY(x-accuracy/2);
+			double rightY=getY(x+accuracy/2);
+				x+=accuracy*(sigmoid(leftY-rightY)-0.5)*2;		
 		}
 		return x;
 	}
 	
 	public double getMax(double times) {
-		step=defaultStep;
 		x=defaultX;
 		for(int i=0;i<times;i++) {
-			if(getY(x-accuracy/2)>getY(x+accuracy/2)) {
-				x-=accuracy*step;		
-			}else {
-				x+=accuracy*step;
-			}
-			step=step*eta;
+			double leftY=getY(x-accuracy/2);
+			double rightY=getY(x+accuracy/2);
+			x-=accuracy*(sigmoid(leftY-rightY)-0.5)*2;
 		}
 		return x;
 	}
@@ -69,25 +52,25 @@ public class BAS {
 		if(limit==Limit.MIN) {
 			getMin(times);
 		}
-		return 0;
+		return x;
 	}
 	
 	public double approach(double targetNumber,double times) {
-		step=defaultStep;
 		x=defaultX;
 		for(int i=0;i<times;i++) {
-			if(Math.abs(getY(x-accuracy/2)-targetNumber)>Math.abs(getY(x+accuracy/2)-targetNumber)) {
-				x+=accuracy*step;		
-			}else {
-				x-=accuracy*step;
-			}
-			step=step*eta;
+			double leftAbs=Math.abs(getY(x-accuracy/2)-targetNumber);
+			double rightAbs=Math.abs(getY(x+accuracy/2)-targetNumber);
+				x+=accuracy*(sigmoid(leftAbs-rightAbs)-0.5)*2;		
 		}
 		return x;
 	}
 	
 	public double getY(double x) {
 		return a*Math.pow(x, 2)+b*x+c;
+	}
+	
+	public double sigmoid(double param) {
+		return ((double)(1))/(1+Math.pow(Math.E, -param));
 	}
 }
  

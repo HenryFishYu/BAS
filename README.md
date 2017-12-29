@@ -1,12 +1,13 @@
 # A simple BAS Calculate
 
+Update 1.1.0 abandon step and eta using sigmoid instead
 ### Introduce
 ### Attention:You can't get the real result with this but only a reault approaching to the real result.
 > This can calculate a quadratic equation,get the limit or approach anynumber
 > 
->eta means how fast the step reduce
+><del>eta means how fast the step reduce</del>
 >
->step means the Centroid moving weight
+><del>step means the Centroid moving weight</del>
 >
 >accuracy means the distance between (leftX)xl and (rightX)xr (accuracy*step should bigger than 0.05,maybe 0.1 is much more better,or you have to adjustment eta and step,but the largest step is 1)
 >
