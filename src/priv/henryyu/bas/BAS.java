@@ -73,11 +73,10 @@ public class BAS {
 	}
 	
 	public double approach(double targetNumber,double times) {
-		double transformedTargetNumber=targetNumber;
 		step=defaultStep;
 		x=defaultX;
 		for(int i=0;i<times;i++) {
-			if(Math.abs(getY(x-accuracy/2)-transformedTargetNumber)>Math.abs(getY(x+accuracy/2)-transformedTargetNumber)) {
+			if(Math.abs(getY(x-accuracy/2)-targetNumber)>Math.abs(getY(x+accuracy/2)-targetNumber)) {
 				x+=accuracy*step;		
 			}else {
 				x-=accuracy*step;
