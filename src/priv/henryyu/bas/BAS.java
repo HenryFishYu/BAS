@@ -1,35 +1,38 @@
 package priv.henryyu.bas; 
 /**
- * A simple BAS class
+ * A Simple BAS class
  * 
  * @author HenryYu
  * @date 2017年12月27日下午2:56:42
- * @version 1.1.0
+ * @version 1.2.0
+ * Last Update 1/2/2018 11:48
  */
-public class BAS {
+public abstract class BAS {
 	private double defaultX;		//param X
 	private double x;				//result X
-	private double leftX;
-	private double rightX;
 	private double y;				
 	private double accuracy;
-	private double a;
-	private double b;
-	private double c;
+	private boolean mutationalX;
 	
-	public BAS(double accuracy,double defaultX,double a,double b,double c) {
+	public BAS(double accuracy,double defaultX) {
 		this.accuracy=accuracy;
 		this.defaultX=defaultX;
-		this.a=a;
-		this.b=b;
-		this.c=c;
+		mutationalX=true;
 	}
 	
 	public double getMin(double times) {
 		x=defaultX;
 		for(int i=0;i<times;i++) {
+			
 			double leftY=getY(x-accuracy/2);
 			double rightY=getY(x+accuracy/2);
+			if (mutationalX) {
+				double tempX = getRandomDouble();
+				if (getY(tempX) <= Math.min(leftY, rightY)) {
+					x = tempX;
+					continue;
+				}
+			}
 				x+=accuracy*(sigmoid(leftY-rightY)-0.5)*2;		
 		}
 		return x;
@@ -40,7 +43,14 @@ public class BAS {
 		for(int i=0;i<times;i++) {
 			double leftY=getY(x-accuracy/2);
 			double rightY=getY(x+accuracy/2);
-			x-=accuracy*(sigmoid(leftY-rightY)-0.5)*2;
+			if (mutationalX) {
+				double tempX = getRandomDouble();
+				if (getY(tempX) >= Math.max(leftY, rightY)) {
+					x = tempX;
+					continue;
+				}
+			}
+				x-=accuracy*(sigmoid(leftY-rightY)-0.5)*2;
 		}
 		return x;
 	}
@@ -60,17 +70,26 @@ public class BAS {
 		for(int i=0;i<times;i++) {
 			double leftAbs=Math.abs(getY(x-accuracy/2)-targetNumber);
 			double rightAbs=Math.abs(getY(x+accuracy/2)-targetNumber);
+			if (mutationalX) {
+				double tempX = getRandomDouble();
+				if (Math.abs(getY(tempX) - targetNumber) < Math.min(leftAbs, rightAbs)) {
+					x = tempX;
+					continue;
+				}
+			}
 				x+=accuracy*(sigmoid(leftAbs-rightAbs)-0.5)*2;		
 		}
 		return x;
 	}
 	
-	public double getY(double x) {
-		return a*Math.pow(x, 2)+b*x+c;
-	}
+	public abstract double getY(double x);
 	
 	public double sigmoid(double param) {
 		return ((double)(1))/(1+Math.pow(Math.E, -param));
+	}
+	
+	public double getRandomDouble() {
+		return Math.random()*Double.MAX_VALUE*(Math.random()>0.5?1:-1);
 	}
 }
  
