@@ -85,7 +85,7 @@ public abstract class BAS {
 	public abstract double getY(double x);
 	
 	public double sigmoid(double param) {
-		return ((double)(1))/(1+Math.pow(Math.E, -param));
+		return ((double)(1))/(1+Math.exp(-param));
 	}
 	
 	public double getRandomDouble() {
